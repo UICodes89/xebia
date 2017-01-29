@@ -1,0 +1,27 @@
+<div class="row productlist">
+	<a href="#!/cart" class="cart-nav"><span>${{totalAmount}}</span><img src="images/cart.png" alt="">
+      <span>{{productCount}}</span>
+	</a>
+	<ul class="col-lg-12 col-md-12 col-sm12 col-xs-12 list-unstyled">
+		<li ng-repeat="product in vm.products.productsInCart" class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+			<div class="image"><img src="{{product.p_imagePath}}" alt=""></div>
+			<div class="name">{{product.p_name}}</div>
+			<div class="price"><input type="text" ng-model="product.p_quantity">
+				<span>{{product.p_price | currency:"$"}}</span></div>
+				<div class="size-color">
+				<select name="size" ng-model="product.p_selected_color" ng-options="list as list.name for list in product.p_available_options.colors">
+        				<option value="">Color</option>
+        			</select>
+				
+				
+				<select name="size" ng-model="product.p_selected_size" ng-options="list as list.name for list in product.p_available_options.sizes">
+	        				<option value="">Size</option>
+	        			</select>
+			</div>
+			<div class="addtocart">
+				<a href="javascript:void(0);" ng-click="vm.addToCart(product);">add to cart</a>
+				<a href="#!/details/{{product.p_id}}">Details</a>
+			</div>				
+		</li>
+	</ul>
+</div>
