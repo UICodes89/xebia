@@ -17,6 +17,7 @@ var App = App || {};
     	    productList.set(vm.products);
     	    console.log(productList.get());
     	});
+
     }])
 
     app.config(function($stateProvider, $urlRouterProvider)

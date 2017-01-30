@@ -19,7 +19,7 @@
     	return{
     		restrict:'E',
     		scope:false,
-    		templateUrl:"./templates/product-detail.template.html",
+    		templateUrl:"../templates/product-detail.template.html",
     		controller:detailsController,
     		controllerAs:'vm',
     		link:productDetailLink

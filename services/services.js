@@ -4,20 +4,23 @@
 	app.service('productList', productList);
 
 	function productList(){
-		var product, cart =[] ;
+		var product;
+		var vm = this;
+		vm.cart = vm.cart || [];
 
-		function checkLocalStorage(){
-			cart = JSON.parse(localStorage.getItem('cart'));
+		vm.checkLocalStorage = function(){
+			vm.cart = JSON.parse(localStorage.getItem('cart'));
 			product = JSON.parse(localStorage.getItem('product'));
 		}
-		checkLocalStorage();
 
-		this.set = function(data){
+		vm.checkLocalStorage();
+
+		vm.set = function(data){
 			product= data;
 			localStorage.setItem('product', JSON.stringify(product));
 		}
 
-		this.get = function(id){
+		vm.get = function(id){
 			if(!product){
 				product = JSON.parse(localStorage.getItem('product'));
 			}
@@ -27,67 +30,76 @@
 		   });
 		}
 
-		this.addtoCart = function(product){
+		vm.addtoCart = function(product){
 			var flag = true;
-			cart.forEach(function(item){
+			vm.cart = vm.cart || [];
+			vm.cart.forEach(function(item){
 				if(item.p_id == product.p_id ){
 					flag = false;
 				}				  
 			});
 
 			if(flag){
-				cart.push(product);
-				localStorage.setItem('cart', JSON.stringify(cart));
+				vm.cart.push(product);
+				localStorage.setItem('cart', JSON.stringify(vm.cart));
 			}                    
 		}
 
-		this.getCart = function(){
-			return cart;
+		vm.getCart = function(){
+			return vm.cart;
 		}
 
-		this.productCount = function(){
-          return cart.length;
+		vm.productCount = function(){
+			var length = 0 ;
+			if(Array.isArray(vm.cart)){
+              length = vm.cart.length
+			}			
+          	return length;
 		}
 
-		this.totalPrice = function(){
+		vm.totalPrice = function(){
 			var total = 0;
-			if(!cart.length){
-              return 0;
+			if(Array.isArray(vm.cart)){
+				if(!vm.cart.length){
+	              return 0;
+				}
+	            vm.cart.forEach(function(item){
+	               total += item.p_price * item.p_quantity;
+	            });
 			}
-            cart.forEach(function(item){
-               total += item.p_price * item.p_quantity;
-            });
 
            return total;
 		}
 
-		this.removCartItem = function(product){
+		vm.removCartItem = function(product){
 			var i=0;
-           cart.forEach(function(item){
+           vm.cart.forEach(function(item){
 				if(item.p_id == product.p_id ){
-				  cart.splice(i,1);	
+				  vm.cart.splice(i,1);	
 				}
 				i++;			  
 			});
-           localStorage.setItem('cart', JSON.stringify(cart));
+           localStorage.setItem('cart', JSON.stringify(vm.cart));
 		}
 
-		this.updatecart = function(item){
-			var i=0;
-          cart.forEach(function(cartItem){
+		vm.updatecart = function(item){
+			vm.cart = vm.cart || [];
+          vm.cart.forEach(function(cartItem){
 				if(cartItem.p_id == item.p_id ){
-					cart[i].p_selected_size.name = item.p_selected_size.name;
-                	cart[i].p_selected_size.code = item.p_selected_size.code;
-                	cart[i].p_quantity = item.p_quantity;
-                    cart[i].p_selected_color.name = item.p_selected_color.name;
-                    cart[i].p_selected_color.hexcode = item.p_selected_color.hexcode;
+					cartItem.p_selected_size.name = item.p_selected_size.name;
+                	cartItem.p_selected_size.code = item.p_selected_size.code;
+                	cartItem.p_quantity = item.p_quantity;
+                    cartItem.p_selected_color.name = item.p_selected_color.name;
+                    cartItem.p_selected_color.hexcode = item.p_selected_color.hexcode;
                 }
-				i++;			  
+							  
 			});
-          localStorage.setItem('cart', JSON.stringify(cart));
-          checkLocalStorage();
-          return cart;
+          localStorage.setItem('cart', JSON.stringify(vm.cart));
+          vm.checkLocalStorage();
+          return vm.cart;
 		}
+
+		
 	}
 	
 
@@ -96,7 +108,7 @@
 		function getproductList(){
 			console.log("allservices")
 			var defer = $q.defer();
-			$http.get('../productlist.json').then(function(response){
+			$http.get('http://uicomponent.com/xebia/productlist.json').then(function(response){
                defer.resolve(response.data); 
 			}).catch(function(err){
                 defer.reject("something went wrong !!");
